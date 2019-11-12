@@ -3,5 +3,29 @@
     <title>shared PI poem</title>
 </head>
 <body>
+<h3>{{ poem }}</h3>
+<button onclick="abc()">send some</button>
+
+<script>
+    abc = function(){
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/add_symbol", true);
+        {#xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");#}
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+
+        xhr.onreadystatechange = function(e){
+            console.log(this);
+            if (xhr.readyState === 4){
+                if (xhr.status === 200){
+                    console.log(xhr.response);
+                } else {
+                    console.error("XHR didn't work: ", xhr.status);
+                }
+            }
+        };
+        xhr.send(JSON.stringify({ symbol: 'a' }));
+    }
+</script>
 </body>
 </html>
