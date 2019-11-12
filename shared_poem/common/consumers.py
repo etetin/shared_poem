@@ -1,8 +1,11 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django_redis import get_redis_connection
 import json
 
 
 class Consumer(AsyncWebsocketConsumer):
+    _redis = get_redis_connection("default")
+
     async def connect(self):
         # Join group
         await self.channel_layer.group_add(
@@ -22,6 +25,8 @@ class Consumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         symbol = text_data_json['symbol']
+
+        self._redis.append('poem', symbol)
 
         await self.channel_layer.group_send(
             'main_page',
