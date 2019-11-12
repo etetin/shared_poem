@@ -107,7 +107,7 @@ venv.bak/
 .idea/
 .DS_store
 
-dark_kitchen/config/__init__.py
+shared_poem/config/__init__.py
 dark_kitchen/common/management/commands/test_command.py
 dark_kitchen/media/
 
