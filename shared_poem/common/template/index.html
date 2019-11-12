@@ -3,8 +3,8 @@
     <title>shared PI poem</title>
 </head>
 <body>
-<textarea id="poem">{{ poem }}</textarea>
-<input type="text" id="symbol">
+<p id="poem">{{ poem }}</p>
+<input type="text" id="symbol" maxlength="1">
 <button onclick="papa()">send some</button>
 
 <script>
@@ -15,7 +15,7 @@
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
         const message = data['symbol'];
-        document.querySelector('#poem').value += (message + '\n');
+        document.querySelector('#poem').innerHTML += (message);
     };
 
     chatSocket.onclose = function(e) {
@@ -23,8 +23,14 @@
     };
 
     papa = function (e) {
+        const symbol = document.querySelector('#symbol').value
+        if (symbol.length !== 1) {
+            console.log('do not cheat');
+            return
+        }
+
         chatSocket.send(JSON.stringify({
-            'symbol': document.querySelector('#symbol').value
+            'symbol': symbol
         }));
     };
 </script>

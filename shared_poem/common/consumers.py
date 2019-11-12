@@ -26,15 +26,16 @@ class Consumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         symbol = text_data_json['symbol']
 
-        self._redis.append('poem', symbol)
+        if len(symbol) == 1:
+            self._redis.append('poem', symbol)
 
-        await self.channel_layer.group_send(
-            'main_page',
-            {
-                'type': 'poem_symbols',
-                'symbol': symbol
-            }
-        )
+            await self.channel_layer.group_send(
+                'main_page',
+                {
+                    'type': 'poem_symbols',
+                    'symbol': symbol
+                }
+            )
 
     async def poem_symbols(self, event):
         symbol = event['symbol']
