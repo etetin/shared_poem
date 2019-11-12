@@ -4,6 +4,7 @@ async-timeout==3.0.1
 attrs==19.3.0
 autobahn==19.11.1
 Automat==0.8.0
+certifi==2019.9.11
 cffi==1.13.2
 channels==2.3.1
 channels-redis==2.4.1
@@ -26,8 +27,10 @@ pycparser==2.19
 PyHamcrest==1.9.0
 pytz==2019.3
 redis==3.3.11
+sentry-sdk==0.13.2
 six==1.13.0
 sqlparse==0.3.0
 Twisted==19.10.0
 txaio==18.8.1
+urllib3==1.25.7
 zope.interface==4.7.1
