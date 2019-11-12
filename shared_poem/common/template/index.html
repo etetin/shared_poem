@@ -3,29 +3,30 @@
     <title>shared PI poem</title>
 </head>
 <body>
-<h3>{{ poem }}</h3>
-<button onclick="abc()">send some</button>
+<textarea id="poem">{{ poem }}</textarea>
+<input type="text" id="symbol">
+<button onclick="papa()">send some</button>
 
 <script>
-    abc = function(){
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/add_symbol", true);
-        {#xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");#}
-        xhr.setRequestHeader("Content-Type", "application/json");
+    const chatSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/add_symbol');
 
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const message = data['symbol'];
+        document.querySelector('#poem').value += (message + '\n');
+    };
 
-        xhr.onreadystatechange = function(e){
-            console.log(this);
-            if (xhr.readyState === 4){
-                if (xhr.status === 200){
-                    console.log(xhr.response);
-                } else {
-                    console.error("XHR didn't work: ", xhr.status);
-                }
-            }
-        };
-        xhr.send(JSON.stringify({ symbol: 'a' }));
-    }
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    papa = function (e) {
+        chatSocket.send(JSON.stringify({
+            'symbol': document.querySelector('#symbol').value
+        }));
+    };
 </script>
 </body>
 </html>
