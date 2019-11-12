@@ -5,8 +5,7 @@
 <body>
 <p id="poem">{{ poem }}</p>
 <input type="text" id="symbol" maxlength="1">
-<button onclick="papa()">send some</button>
-
+<button id="btn">send some</button>
 <script>
     const chatSocket = new WebSocket(
         'ws://' + window.location.host +
@@ -22,7 +21,7 @@
         console.error('Chat socket closed unexpectedly');
     };
 
-    papa = function (e) {
+    document.querySelector('#btn').onclick = function (e) {
         const symbol = document.querySelector('#symbol').value
         if (symbol.length !== 1) {
             console.log('do not cheat');
