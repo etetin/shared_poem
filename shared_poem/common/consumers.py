@@ -5,8 +5,14 @@ import json
 
 class Consumer(AsyncWebsocketConsumer):
     _redis = get_redis_connection("default")
+    _user_agent = None
 
     async def connect(self):
+        for l in self.scope['headers']:
+            if l[0].decode('utf-8') == 'user-agent':
+                self._user_agent = l[1].decode("utf-8")
+                break
+
         # Join group
         await self.channel_layer.group_add(
             'main_page',
@@ -27,15 +33,17 @@ class Consumer(AsyncWebsocketConsumer):
         symbol = text_data_json['symbol']
 
         if len(symbol) == 1:
-            self._redis.append('poem', symbol)
+            if not self._redis.exists(f'useragent:{self._user_agent}') and self._user_agent is not None:
+                self._redis.set(f'useragent:{self._user_agent}', 'temp', ex=300)
+                self._redis.append('poem', symbol)
 
-            await self.channel_layer.group_send(
-                'main_page',
-                {
-                    'type': 'poem_symbols',
-                    'symbol': symbol
-                }
-            )
+                await self.channel_layer.group_send(
+                    'main_page',
+                    {
+                        'type': 'poem_symbols',
+                        'symbol': symbol
+                    }
+                )
 
     async def poem_symbols(self, event):
         symbol = event['symbol']
